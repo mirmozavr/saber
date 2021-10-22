@@ -22,9 +22,12 @@ def merge(path1: str, path2: str, o: str) -> None:
     print(f"Merge started at {start_time.strftime('%H:%M:%S')}")
     with open(path1) as log_a, open(path2) as log_b, open(o, "w") as file:
         a, b = log_a.readline(), log_b.readline()
-        if a and b:
+
+        if not all((a, b)):
+            file.write(a or b)
+        else:
             while True:
-                if not (a and b):
+                if not all((a, b)):
                     file.write(json.dumps(a) if a else json.dumps(b))
                     file.write("\n")
                     break
@@ -41,8 +44,6 @@ def merge(path1: str, path2: str, o: str) -> None:
                     file.write(json.dumps(b))
                     b = log_b.readline()
                 file.write("\n")
-        else:
-            file.write(a or b)
 
         [file.write(line) for line in log_a.readlines()]
         [file.write(line) for line in log_b.readlines()]
